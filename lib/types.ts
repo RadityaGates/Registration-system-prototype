@@ -1,13 +1,26 @@
+export interface Event {
+  id: string
+  slug: string
+  name: string
+  date: string
+  location: string
+  description: string
+  isUpcoming: boolean
+  heroImage: string
+  ticketTypes: TicketType[]
+}
+
 export interface TicketType {
   id: string
   name: string
   price: number
   stock: number
-  description?: string
+  description: string
 }
 
 export interface TicketPurchase {
-  id: string // Unique Ticket ID (e.g. LSF-2025-XYZ123)
+  id: string
+  eventId: string
   fullName: string
   email: string
   phoneNumber: string
@@ -15,13 +28,13 @@ export interface TicketPurchase {
   ticketTypeName: string
   quantity: number
   totalPrice: number
-  qrCodeUrl?: string // URL or base64 data of the QR code
   status: "unused" | "used"
   purchaseDate: Date
+  qrCodeUrl?: string
 }
 
 export interface AdminUser {
   id: string
   username: string
-  passwordHash: string // In a real app, never store plain passwords
+  passwordHash: string // In a real app, this would be a securely hashed password
 }

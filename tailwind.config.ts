@@ -20,6 +20,12 @@ const config = {
     },
     extend: {
       colors: {
+        // Based on the design notes and image
+        brand: {
+          navy: "#101419", // A very dark, almost black navy
+          beige: "#F5F5DC",
+          accent: "#E900FF", // The magenta accent color
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -54,10 +60,12 @@ const config = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
-      borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+      fontFamily: {
+        sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+      },
+      backgroundImage: {
+        "hero-crowd":
+          "url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1920w%20light.png-bZ3dKMFpTMHfHbkwLlqEjkoMNFBtlS.jpeg')",
       },
       keyframes: {
         "accordion-down": {

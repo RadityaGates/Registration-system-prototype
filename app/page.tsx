@@ -1,83 +1,128 @@
-"use client"
-
 import Link from "next/link"
-import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { CalendarDays, MapPin, Ticket } from "lucide-react"
+import { Card, CardContent } from "@/components/ui/card"
+import { getAllEvents } from "@/lib/db"
+import { ArrowRight } from "lucide-react"
 
-export default function LandingPage() {
-  const eventDate = "October 26-27, 2025"
-  const eventLocation = "Ancol Beach, Jakarta"
+export default async function HomePage() {
+  const allEvents = await getAllEvents()
+  const upcomingEvents = allEvents.filter((event) => event.isUpcoming)
 
   return (
-    <>
-      <section className="relative h-[calc(100vh-5rem)] min-h-[600px] flex items-center justify-center text-center bg-white">
-        <div className="absolute inset-0 bg-dots-pattern opacity-10"></div>
-        <div className="relative z-10 p-6 space-y-8">
-          <h1 className="text-5xl md:text-7xl font-extrabold text-black animate-fade-in-down">Laut Senja Festival</h1>
-          <p className="text-xl md:text-2xl text-gray-600 font-medium animate-fade-in-up animation-delay-300">
-            by Hassa Creatif
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6 text-gray-800 animate-fade-in-up animation-delay-500">
-            <div className="flex items-center space-x-2">
-              <CalendarDays className="h-6 w-6 text-black" />
-              <span>{eventDate}</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <MapPin className="h-6 w-6 text-black" />
-              <span>{eventLocation}</span>
-            </div>
-          </div>
-          <Button
-            asChild
-            size="lg"
-            className="bg-black hover:bg-gray-800 text-white font-bold py-4 px-8 text-lg rounded-lg shadow-lg transform hover:scale-105 transition-transform animate-fade-in-up animation-delay-700"
+    <div className="bg-brand-beige text-brand-navy">
+      {/* Hero Section */}
+      <section className="relative h-screen min-h-[700px] flex items-center justify-center text-center bg-hero-crowd bg-cover bg-center">
+        <div className="absolute inset-0 bg-brand-navy/70"></div>
+        <div className="relative z-10 p-6 space-y-6">
+          <h1
+            className="text-6xl md:text-8xl font-black uppercase text-transparent"
+            style={{ WebkitTextStroke: "2px #F5F5DC", paintOrder: "stroke fill" }}
           >
-            <Link href="/tickets">
-              <Ticket className="mr-2 h-5 w-5" /> Buy Tickets Now
-            </Link>
-          </Button>
-        </div>
-      </section>
-
-      <section id="about" className="py-16 md:py-24 bg-gray-50 border-y border-gray-200">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-black mb-6">
-            Experience the Magic of <span className="text-gray-700">Laut Senja</span>
-          </h2>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto mb-8">
-            Join us for an unforgettable celebration of music, art, and culture. Immerse yourself in captivating
-            performances and a vibrant atmosphere. This is more than just a festival; it's a memory in the making.
+            Hassa Creatif
+          </h1>
+          <p className="text-lg md:text-xl text-brand-beige max-w-2xl mx-auto">
+            We are a 360 creative solutions company, unified by a passion for developing disruptive ideas. We turn
+            consumers into fans through human-centered storied experiences.
           </p>
-          <Image
-            src="/placeholder.svg?width=800&height=450&text=Festival+Highlights"
-            alt="Laut Senja Festival Highlights"
-            width={800}
-            height={450}
-            className="rounded-lg shadow-md mx-auto"
-          />
         </div>
       </section>
 
-      <style jsx global>{`
-        .bg-dots-pattern {
-          background-image: radial-gradient(#e0e0e0 1px, transparent 1px);
-          background-size: 16px 16px;
-        }
-        .animation-delay-300 { animation-delay: 0.3s; }
-        .animation-delay-500 { animation-delay: 0.5s; }
-        .animation-delay-700 { animation-delay: 0.7s; }
-        @keyframes fade-in-down {
-          0% { opacity: 0; transform: translateY(-20px); }
-          100% { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fade-in-up {
-          0% { opacity: 0; transform: translateY(20px); }
-          100% { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in-down { animation: fade-in-down 0.5s ease-out forwards; }
-        .animate-fade-in-up { animation: fade-in-up 0.5s ease-out forwards; }
-      `}</style>
-    </>
+      {/* Upcoming Events Section */}
+      <section id="events" className="py-20 md:py-28">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-4xl md:text-5xl font-black uppercase text-center mb-12">Upcoming Events</h2>
+          {upcomingEvents.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {upcomingEvents.map((event) => (
+                <Link href={`/events/${event.slug}`} key={event.id}>
+                  <Card className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 group">
+                    <div className="overflow-hidden">
+                      <img
+                        src={event.heroImage || "/placeholder.svg"}
+                        alt={event.name}
+                        className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                    <CardContent className="p-6">
+                      <p className="text-sm text-gray-500 mb-1">{event.date}</p>
+                      <h3 className="text-2xl font-bold mb-2">{event.name}</h3>
+                      <p className="text-gray-600 mb-4">{event.location}</p>
+                      <div className="text-brand-navy font-semibold flex items-center group-hover:text-brand-accent transition-colors">
+                        View Event <ArrowRight className="ml-2 h-4 w-4" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <p className="text-center text-gray-600">No upcoming events. Please check back soon!</p>
+          )}
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section id="about" className="py-20 md:py-28 bg-white">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-4xl md:text-5xl font-black uppercase mb-6">About Us</h2>
+          <p className="text-lg text-gray-700 max-w-3xl mx-auto">
+            Our work cuts across Media & Advertising, Experiential Marketing, Audio/Visual production, Digital marketing
+            & Tech innovation, and Entertainment. With every project and endeavour we undertake, we go out of our way to
+            raise the bar, hop over it, and raise it even higher.
+          </p>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="py-20 md:py-28 bg-brand-navy text-brand-beige">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h2 className="text-4xl md:text-5xl font-black uppercase">
+              Work Together <span className="text-brand-accent">*</span> Let's Talk
+            </h2>
+          </div>
+          <form className="max-w-xl mx-auto mt-12 space-y-6">
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium uppercase tracking-wider mb-1">
+                Name
+              </label>
+              <input
+                type="text"
+                id="name"
+                className="w-full bg-white/10 border border-white/20 rounded-md p-3 focus:ring-brand-accent focus:border-brand-accent"
+              />
+            </div>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium uppercase tracking-wider mb-1">
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                className="w-full bg-white/10 border border-white/20 rounded-md p-3 focus:ring-brand-accent focus:border-brand-accent"
+              />
+            </div>
+            <div>
+              <label htmlFor="message" className="block text-sm font-medium uppercase tracking-wider mb-1">
+                Message
+              </label>
+              <textarea
+                id="message"
+                rows={4}
+                className="w-full bg-white/10 border border-white/20 rounded-md p-3 focus:ring-brand-accent focus:border-brand-accent"
+              ></textarea>
+            </div>
+            <div className="text-right">
+              <Button
+                type="submit"
+                className="bg-brand-beige text-brand-navy hover:bg-white font-bold uppercase tracking-wider px-8 py-3"
+              >
+                Send Form
+              </Button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </div>
   )
 }
